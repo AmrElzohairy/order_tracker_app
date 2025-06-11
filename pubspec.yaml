@@ -32,6 +32,7 @@ dependencies:
   cloud_firestore: ^5.6.3
   cupertino_icons: ^1.0.8
   custom_info_window: ^1.0.1
+  dartz: ^0.10.1
   firebase_auth: ^5.4.2
   firebase_core: ^3.11.0
   firebase_messaging: ^15.2.2
@@ -50,12 +51,6 @@ dependencies:
   google_maps_flutter: ^2.10.0
 
 dev_dependencies:
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
