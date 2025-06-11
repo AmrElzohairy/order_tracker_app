@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:order_tracker_app/core/routing/router_generation_config.dart';
 import 'package:order_tracker_app/core/styling/theme_data.dart';
+import 'package:order_tracker_app/core/utils/service_locator.dart';
 import 'package:order_tracker_app/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  setupServiceLocator();
+
   runApp(const MyApp());
 }
 
