@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "85253047935",
+    "project_id": "order-tracker-app-58daa",
+    "storage_bucket": "order-tracker-app-58daa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:85253047935:android:77e4e2f96b1a402a29a14a",
+        "android_client_info": {
+          "package_name": "com.example.order_tracker_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0DOeWW82mpwhoQ4btkMj8wogSzHGcpx4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
