@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:order_tracker_app/core/routing/app_routes.dart';
-import 'package:order_tracker_app/features/auth/login_screen.dart';
-import 'package:order_tracker_app/features/auth/register_screen.dart';
+import 'package:order_tracker_app/features/auth/presentation/views/login_screen.dart';
+import 'package:order_tracker_app/features/auth/presentation/views/register_screen.dart';
 import 'package:order_tracker_app/features/splash_screen/splash_screen.dart';
 
 
