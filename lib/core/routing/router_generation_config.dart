@@ -1,5 +1,8 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:order_tracker_app/core/routing/app_routes.dart';
+import 'package:order_tracker_app/core/utils/service_locator.dart';
+import 'package:order_tracker_app/features/auth/presentation/cubits/auth_cubit/auth_cubit.dart';
 import 'package:order_tracker_app/features/auth/presentation/views/login_screen.dart';
 import 'package:order_tracker_app/features/auth/presentation/views/register_screen.dart';
 import 'package:order_tracker_app/features/home/presentation/views/home_screen.dart';
@@ -17,12 +20,20 @@ class RouterGenerationConfig {
       GoRoute(
         name: AppRoutes.loginScreen,
         path: AppRoutes.loginScreen,
-        builder: (context, state) => const LoginScreen(),
+        builder:
+            (context, state) => BlocProvider(
+              create: (context) => sl<AuthCubit>(),
+              child: const LoginScreen(),
+            ),
       ),
       GoRoute(
         name: AppRoutes.registerScreen,
         path: AppRoutes.registerScreen,
-        builder: (context, state) => const RegisterScreen(),
+        builder:
+            (context, state) => BlocProvider(
+              create: (context) => sl<AuthCubit>(),
+              child: const RegisterScreen(),
+            ),
       ),
       GoRoute(
         name: AppRoutes.homeScreen,
