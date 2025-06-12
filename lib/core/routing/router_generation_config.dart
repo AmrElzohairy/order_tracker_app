@@ -5,7 +5,7 @@ import 'package:order_tracker_app/core/utils/service_locator.dart';
 import 'package:order_tracker_app/features/auth/presentation/cubits/auth_cubit/auth_cubit.dart';
 import 'package:order_tracker_app/features/auth/presentation/views/login_screen.dart';
 import 'package:order_tracker_app/features/auth/presentation/views/register_screen.dart';
-import 'package:order_tracker_app/features/home/presentation/views/add_order_screen.dart';
+import 'package:order_tracker_app/features/add_order/presentation/views/add_order_screen.dart';
 import 'package:order_tracker_app/features/home/presentation/views/home_screen.dart';
 import 'package:order_tracker_app/features/home/presentation/views/orders_screen.dart';
 import 'package:order_tracker_app/features/splash_screen/splash_screen.dart';

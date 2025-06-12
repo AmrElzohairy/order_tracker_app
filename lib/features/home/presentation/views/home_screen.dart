@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:order_tracker_app/core/routing/app_routes.dart';
 import 'package:order_tracker_app/core/styling/app_colors.dart';
 import 'package:order_tracker_app/core/styling/app_styles.dart';
 
@@ -45,7 +47,9 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              context.pushNamed(AppRoutes.addOrderScreen);
+            },
             child: Container(
               margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
