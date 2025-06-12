@@ -49,6 +49,7 @@ dependencies:
   go_router: ^14.6.2
   go_transitions: ^0.7.1
   google_maps_flutter: ^2.10.0
+  place_picker_google: ^0.0.17
 
 dev_dependencies:
   flutter_lints: ^5.0.0

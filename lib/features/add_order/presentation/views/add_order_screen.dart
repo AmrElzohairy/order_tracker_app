@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:order_tracker_app/core/routing/app_routes.dart';
 import 'package:order_tracker_app/core/styling/app_assets.dart';
 import 'package:order_tracker_app/core/styling/app_colors.dart';
 import 'package:order_tracker_app/core/styling/app_styles.dart';
@@ -16,7 +19,8 @@ class AddOrderScreen extends StatelessWidget {
     final orderIDController = TextEditingController();
     final orderNameController = TextEditingController();
     final orderArrivalTimeController = TextEditingController();
-    final DateTime? orderArrival;
+    LatLng? orderLocation;
+    String? orderPlace;
     return Scaffold(
       appBar: AppBar(
         leading: SizedBox(),
@@ -97,7 +101,9 @@ class AddOrderScreen extends StatelessWidget {
                 PrimayButtonWidget(
                   icon: Icon(Icons.location_on_outlined, color: Colors.white),
                   buttonText: "Select Directions",
-                  onPress: () {},
+                  onPress: () {
+                    context.pushNamed(AppRoutes.palcePikerScreen);
+                  },
                 ),
                 const HeightSpace(16),
                 PrimayButtonWidget(buttonText: "Add Order", onPress: () {}),
