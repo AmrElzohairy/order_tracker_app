@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:order_tracker_app/core/routing/app_routes.dart';
@@ -10,17 +11,22 @@ import 'package:order_tracker_app/core/widgets/custom_text_field.dart';
 import 'package:order_tracker_app/core/widgets/primay_button_widget.dart';
 import 'package:order_tracker_app/core/widgets/spacing_widgets.dart';
 
-class AddOrderScreen extends StatelessWidget {
+class AddOrderScreen extends StatefulWidget {
   const AddOrderScreen({super.key});
 
   @override
+  State<AddOrderScreen> createState() => _AddOrderScreenState();
+}
+
+class _AddOrderScreenState extends State<AddOrderScreen> {
+  final formKey = GlobalKey<FormState>();
+  final orderIDController = TextEditingController();
+  final orderNameController = TextEditingController();
+  final orderArrivalTimeController = TextEditingController();
+  LatLng? orderLocation;
+  String orderLocationDetails = "";
+  @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final orderIDController = TextEditingController();
-    final orderNameController = TextEditingController();
-    final orderArrivalTimeController = TextEditingController();
-    LatLng? orderLocation;
-    String? orderPlace;
     return Scaffold(
       appBar: AppBar(
         leading: SizedBox(),
@@ -97,16 +103,41 @@ class AddOrderScreen extends StatelessWidget {
                     return null;
                   },
                 ),
+                const HeightSpace(32),
+                Text("Order Location", style: AppStyles.black16w500Style),
+                const HeightSpace(8),
+                CustomTextField(
+                  readOnly: true,
+                  controller: orderArrivalTimeController,
+                  hintText:
+                      orderLocationDetails.isNotEmpty
+                          ? orderLocationDetails
+                          : "Select Location From Map",
+                ),
                 const HeightSpace(30),
                 PrimayButtonWidget(
                   icon: Icon(Icons.location_on_outlined, color: Colors.white),
-                  buttonText: "Select Directions",
-                  onPress: () {
-                    context.pushNamed(AppRoutes.palcePikerScreen);
+                  buttonText: "Select Location",
+                  onPress: () async {
+                    LatLng? latlng = await context.push<LatLng?>(
+                      AppRoutes.palcePikerScreen,
+                    );
+                    if (latlng != null) {
+                      orderLocation = latlng;
+                      List<Placemark> placemarks =
+                          await placemarkFromCoordinates(
+                            orderLocation!.latitude,
+                            orderLocation!.longitude,
+                          );
+                      orderLocationDetails =
+                          "${placemarks.first.country}, ${placemarks.first.locality}, ${placemarks.first.street}";
+                    }
+                    setState(() {});
                   },
                 ),
                 const HeightSpace(16),
-                PrimayButtonWidget(buttonText: "Add Order", onPress: () {}),
+                PrimayButtonWidget(buttonText: "Create Order", onPress: () {}),
+                const HeightSpace(20),
               ],
             ),
           ),
