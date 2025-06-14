@@ -6,8 +6,8 @@ class OrderModel {
   final String orderDate;
   final String orderStatus;
   final String orderUserId;
-  final String userLat;
-  final String userLong;
+  final num userLat;
+  final num userLong;
 
   OrderModel({
     required this.orderId,
