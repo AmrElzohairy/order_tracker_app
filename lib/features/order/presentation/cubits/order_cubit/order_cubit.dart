@@ -6,7 +6,7 @@ import 'package:order_tracker_app/features/order/data/repo/order_repo.dart';
 part 'order_state.dart';
 
 class OrderCubit extends Cubit<OrderState> {
-  OrderCubit({required this.orderRepo}) : super(OrderInitial());
+  OrderCubit(this.orderRepo) : super(OrderInitial());
   final OrderRepo orderRepo;
 
   Future<void> addOrder({required OrderModel orderModel}) async {
