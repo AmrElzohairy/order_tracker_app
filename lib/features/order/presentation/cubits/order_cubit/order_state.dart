@@ -16,3 +16,15 @@ final class OrderAddedError extends OrderState {
   final String errMessage;
   OrderAddedError(this.errMessage);
 }
+
+final class GetUserOrdersLoading extends OrderState {}
+
+final class GetUserOrdersSuccess extends OrderState {
+  final List<OrderModel> orders;
+  GetUserOrdersSuccess(this.orders);
+}
+
+final class GetUserOrdersError extends OrderState {
+  final String errMessage;
+  GetUserOrdersError(this.errMessage);
+}
