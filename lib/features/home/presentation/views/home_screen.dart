@@ -28,7 +28,9 @@ class HomeScreen extends StatelessWidget {
         ),
         children: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              context.pushNamed(AppRoutes.ordersScreen);
+            },
             child: Container(
               margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
