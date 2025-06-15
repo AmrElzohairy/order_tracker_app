@@ -62,7 +62,11 @@ class RouterGenerationConfig {
       GoRoute(
         name: AppRoutes.ordersScreen,
         path: AppRoutes.ordersScreen,
-        builder: (context, state) => const OrdersScreen(),
+        builder:
+            (context, state) => BlocProvider(
+              create: (context) => sl<OrderCubit>(),
+              child: const OrdersScreen(),
+            ),
       ),
     ],
   );
