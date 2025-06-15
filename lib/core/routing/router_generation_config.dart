@@ -53,7 +53,6 @@ class RouterGenerationConfig {
               child: const AddOrderScreen(),
             ),
       ),
-
       GoRoute(
         name: AppRoutes.palcePikerScreen,
         path: AppRoutes.palcePikerScreen,

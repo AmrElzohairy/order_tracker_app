@@ -26,10 +26,11 @@ class OrderRepo {
                 "orderUserId",
                 isEqualTo: FirebaseAuth.instance.currentUser!.uid,
               )
-              .orderBy("orderDate")
               .get();
       List<OrderModel> orders =
-          snapshot.docs.map((order) => OrderModel.fromJson(order.data())).toList();
+          snapshot.docs
+              .map((order) => OrderModel.fromJson(order.data()))
+              .toList();
       return Right(orders);
     } catch (e) {
       return Left("Error when getting user orders $e");
