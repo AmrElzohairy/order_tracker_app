@@ -1,13 +1,13 @@
 class OrderModel {
   final String orderId;
   final String orderName;
-  final num orderLat;
-  final num orderLong;
+  final double orderLat;
+  final double orderLong;
   final String orderDate;
   final String orderStatus;
   final String orderUserId;
-  final num userLat;
-  final num userLong;
+  final double userLat;
+  final double userLong;
 
   OrderModel({
     required this.orderId,

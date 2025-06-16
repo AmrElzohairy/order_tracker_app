@@ -1,11 +1,196 @@
-import 'package:flutter/widgets.dart';
+import 'dart:async';
+import 'dart:developer';
+
+import 'package:custom_info_window/custom_info_window.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:order_tracker_app/core/styling/app_assets.dart';
+import 'package:order_tracker_app/core/styling/app_styles.dart';
+import 'package:order_tracker_app/core/utils/location_services.dart';
+import 'package:order_tracker_app/core/widgets/spacing_widgets.dart'
+    show HeightSpace;
 import 'package:order_tracker_app/features/order/data/model/order_model.dart';
 
-class OrderTrackScreen extends StatelessWidget {
+class OrderTrackScreen extends StatefulWidget {
   const OrderTrackScreen({super.key, required this.orderModel});
-final OrderModel orderModel;
+  final OrderModel orderModel;
+
+  @override
+  State<OrderTrackScreen> createState() => _OrderTrackScreenState();
+}
+
+class _OrderTrackScreenState extends State<OrderTrackScreen> {
+  LatLng? currentUserLocation;
+  final Completer<GoogleMapController> _controller =
+      Completer<GoogleMapController>();
+  final CustomInfoWindowController _customInfoWindowController =
+      CustomInfoWindowController();
+  Set<Marker> markers = {};
+  loadMarkers(OrderModel order) async {
+    final Uint8List orderMarkerIcon = await LocationServices.getBytesFromAsset(
+      AppAssets.order,
+      50,
+    );
+    final Uint8List truckMarkerIcon = await LocationServices.getBytesFromAsset(
+      AppAssets.truck,
+      50,
+    );
+    final Marker truckMarker = Marker(
+      icon: BitmapDescriptor.bytes(truckMarkerIcon),
+      markerId: MarkerId(FirebaseAuth.instance.currentUser!.uid.toString()),
+      position: LatLng(
+        currentUserLocation!.latitude,
+        currentUserLocation!.longitude,
+      ),
+      onTap: () {
+        _customInfoWindowController.addInfoWindow!(
+          Card(
+            margin: const EdgeInsets.all(10),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "order id:#${order.orderId}",
+                    style: AppStyles.black18BoldStyle,
+                  ),
+                  Text(
+                    "order name: ${order.orderName}",
+                    style: AppStyles.black18BoldStyle,
+                  ),
+                  Text(
+                    "order arrival time: ${order.orderDate}",
+                    style: AppStyles.black15BoldStyle,
+                  ),
+                  Text(
+                    "order status: ${order.orderStatus}",
+                    style: AppStyles.black15BoldStyle.copyWith(
+                      color: Colors.green,
+                    ),
+                  ),
+                  HeightSpace(10),
+                ],
+              ),
+            ),
+          ),
+          LatLng(order.orderLat, order.orderLong),
+        );
+      },
+    );
+    final Marker orderMarker = Marker(
+      icon: BitmapDescriptor.bytes(orderMarkerIcon),
+      markerId: MarkerId(order.orderId),
+      position: LatLng(order.orderLat, order.orderLong),
+      onTap: () {
+        _customInfoWindowController.addInfoWindow!(
+          Card(
+            margin: const EdgeInsets.all(10),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "order id:#${order.orderId}",
+                    style: AppStyles.black18BoldStyle,
+                  ),
+                  Text(
+                    "order name: ${order.orderName}",
+                    style: AppStyles.black18BoldStyle,
+                  ),
+                  Text(
+                    "order arrival time: ${order.orderDate}",
+                    style: AppStyles.black15BoldStyle,
+                  ),
+                  Text(
+                    "order status: ${order.orderStatus}",
+                    style: AppStyles.black15BoldStyle.copyWith(
+                      color: Colors.green,
+                    ),
+                  ),
+                  HeightSpace(10),
+                ],
+              ),
+            ),
+          ),
+          LatLng(order.orderLat, order.orderLong),
+        );
+      },
+    );
+    markers.addAll([truckMarker, orderMarker]);
+
+    setState(() {});
+  }
+
+  Future<void> _animateToPosition(LatLng position) async {
+    final GoogleMapController controller = await _controller.future;
+
+    await controller.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: position, zoom: 16),
+      ),
+    );
+  }
+
+  getCurrentPositionAndAnimateToIT() async {
+    try {
+      Position position = await LocationServices.determinePosition();
+      currentUserLocation = LatLng(position.latitude, position.longitude);
+      _animateToPosition(LatLng(position.latitude, position.longitude));
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    initMarkersAndLocations();
+    super.initState();
+  }
+
+  initMarkersAndLocations() async {
+    await getCurrentPositionAndAnimateToIT();
+    loadMarkers(widget.orderModel);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.terrain,
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                widget.orderModel.orderLat,
+                widget.orderModel.orderLong,
+              ),
+              zoom: 15,
+            ),
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+              _customInfoWindowController.googleMapController = controller;
+            },
+            onTap: (argument) {
+              _customInfoWindowController.hideInfoWindow!();
+            },
+            onCameraMove: (position) {
+              _customInfoWindowController.onCameraMove!();
+            },
+            markers: markers,
+          ),
+          CustomInfoWindow(
+            controller: _customInfoWindowController,
+            height: 200,
+            width: 200,
+            offset: 50,
+          ),
+        ],
+      ),
+    );
   }
 }
