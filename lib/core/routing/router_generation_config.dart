@@ -6,8 +6,10 @@ import 'package:order_tracker_app/features/auth/presentation/cubits/auth_cubit/a
 import 'package:order_tracker_app/features/auth/presentation/views/login_screen.dart';
 import 'package:order_tracker_app/features/auth/presentation/views/register_screen.dart';
 import 'package:order_tracker_app/features/home/presentation/views/home_screen.dart';
+import 'package:order_tracker_app/features/order/data/model/order_model.dart';
 import 'package:order_tracker_app/features/order/presentation/cubits/order_cubit/order_cubit.dart';
 import 'package:order_tracker_app/features/order/presentation/views/add_order_screen.dart';
+import 'package:order_tracker_app/features/order/presentation/views/order_track_screen.dart';
 import 'package:order_tracker_app/features/order/presentation/views/orders_screen.dart';
 import 'package:order_tracker_app/features/order/presentation/views/place_picker_screen.dart';
 import 'package:order_tracker_app/features/splash_screen/splash_screen.dart';
@@ -65,6 +67,15 @@ class RouterGenerationConfig {
             (context, state) => BlocProvider(
               create: (context) => sl<OrderCubit>(),
               child: const OrdersScreen(),
+            ),
+      ),
+      GoRoute(
+        name: AppRoutes.orderTrackScreen,
+        path: AppRoutes.orderTrackScreen,
+        builder:
+            (context, state) => BlocProvider(
+              create: (context) => sl<OrderCubit>(),
+              child:  OrderTrackScreen(orderModel: state.extra as OrderModel),
             ),
       ),
     ],

@@ -6,4 +6,5 @@ class AppRoutes {
   static const String ordersScreen = '/orderDetailsScreen';
   static const String addOrderScreen = '/addOrderScreen';
   static const String palcePikerScreen = '/placePikerScreen';
+  static const String orderTrackScreen = '/orderTrackScreen';
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:order_tracker_app/core/routing/app_routes.dart';
 import 'package:order_tracker_app/core/styling/app_colors.dart';
 import 'package:order_tracker_app/core/styling/app_styles.dart';
 import 'package:order_tracker_app/core/widgets/loading_widget.dart';
@@ -76,7 +78,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         HeightSpace(10),
                         PrimayButtonWidget(
                           buttonText: "Track Order",
-                          onPress: () {},
+                          onPress: () {
+                            context.pushNamed(
+                              AppRoutes.orderTrackScreen,
+                              extra: state.orders[index],
+                            );
+                          },
                         ),
                       ],
                     ),
