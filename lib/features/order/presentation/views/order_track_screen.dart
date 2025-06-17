@@ -47,10 +47,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
     final Marker truckMarker = Marker(
       icon: BitmapDescriptor.bytes(truckMarkerIcon),
       markerId: MarkerId(FirebaseAuth.instance.currentUser!.uid.toString()),
-      position: LatLng(
-        currentUserLocation!.latitude,
-        currentUserLocation!.longitude,
-      ),
+      position: currentUserLocation ?? LatLng(0, 0),
       onTap: () {
         _customInfoWindowController.addInfoWindow!(
           Card(
@@ -154,6 +151,8 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
 
   _getPolyline() async {
     try {
+      polylineCoordinates = [];
+      polylines = {};
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         googleApiKey: googleAPiKey,
         request: PolylineRequest(
@@ -196,9 +195,72 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
     }
   }
 
+  listenToUserLocation() {
+    StreamSubscription<Position> positionStream = Geolocator.getPositionStream(
+      locationSettings: LocationSettings(distanceFilter: 10),
+    ).listen((Position? position) {
+      if (position != null) {
+        currentUserLocation = LatLng(position.latitude, position.longitude);
+        updateTruckMarker();
+        _getPolyline();
+      }
+    });
+  }
+
+  updateTruckMarker() async {
+    final Uint8List truckMarkerIcon = await LocationServices.getBytesFromAsset(
+      AppAssets.truck,
+      50,
+    );
+    final Marker newTruckMarker = Marker(
+      icon: BitmapDescriptor.bytes(truckMarkerIcon),
+      markerId: MarkerId(FirebaseAuth.instance.currentUser!.uid.toString()),
+      position: currentUserLocation ?? LatLng(0, 0),
+      onTap: () {
+        _customInfoWindowController.addInfoWindow!(
+          Card(
+            margin: const EdgeInsets.all(10),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "order id:#${widget.orderModel.orderId}",
+                    style: AppStyles.black18BoldStyle,
+                  ),
+                  Text(
+                    "order name: ${widget.orderModel.orderName}",
+                    style: AppStyles.black18BoldStyle,
+                  ),
+                  Text(
+                    "order arrival time: ${widget.orderModel.orderDate}",
+                    style: AppStyles.black15BoldStyle,
+                  ),
+                  Text(
+                    "order status: ${widget.orderModel.orderStatus}",
+                    style: AppStyles.black15BoldStyle.copyWith(
+                      color: Colors.green,
+                    ),
+                  ),
+                  HeightSpace(10),
+                ],
+              ),
+            ),
+          ),
+          LatLng(currentUserLocation!.latitude, currentUserLocation!.longitude),
+        );
+      },
+    );
+    markers.remove(newTruckMarker);
+    markers.add(newTruckMarker);
+    setState(() {});
+  }
+
   @override
   void initState() {
     initMarkersAndLocations();
+    listenToUserLocation();
     super.initState();
   }
 
