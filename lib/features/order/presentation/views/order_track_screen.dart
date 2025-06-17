@@ -5,9 +5,11 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:order_tracker_app/core/styling/app_assets.dart';
+import 'package:order_tracker_app/core/styling/app_colors.dart';
 import 'package:order_tracker_app/core/styling/app_styles.dart';
 import 'package:order_tracker_app/core/utils/location_services.dart';
 import 'package:order_tracker_app/core/widgets/spacing_widgets.dart'
@@ -23,6 +25,10 @@ class OrderTrackScreen extends StatefulWidget {
 }
 
 class _OrderTrackScreenState extends State<OrderTrackScreen> {
+  Map<PolylineId, Polyline> polylines = {};
+  List<LatLng> polylineCoordinates = [];
+  PolylinePoints polylinePoints = PolylinePoints();
+  String googleAPiKey = 'AIzaSyBCk6CObXNzP695fUiG0HyT05_Ja2iIKlQ';
   LatLng? currentUserLocation;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
@@ -146,6 +152,50 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
     }
   }
 
+  _getPolyline() async {
+    try {
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        googleApiKey: googleAPiKey,
+        request: PolylineRequest(
+          origin: PointLatLng(
+            currentUserLocation!.latitude,
+            currentUserLocation!.longitude,
+          ),
+          destination: PointLatLng(
+            widget.orderModel.orderLat,
+            widget.orderModel.orderLong,
+          ),
+          mode: TravelMode.driving,
+          // wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
+        ),
+      );
+      if (result.points.isNotEmpty) {
+        for (var point in result.points) {
+          polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        }
+      }
+      _addPolyLine();
+    } on Exception catch (e) {
+      log("Error getting polyline => $e");
+    }
+  }
+
+  _addPolyLine() {
+    try {
+      PolylineId id = PolylineId("poly");
+      Polyline polyline = Polyline(
+        polylineId: id,
+        color: AppColors.primaryColor,
+        points: polylineCoordinates,
+        width: 5,
+      );
+      polylines[id] = polyline;
+      setState(() {});
+    } on Exception catch (e) {
+      log("Error adding polyline => $e");
+    }
+  }
+
   @override
   void initState() {
     initMarkersAndLocations();
@@ -154,6 +204,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
 
   initMarkersAndLocations() async {
     await getCurrentPositionAndAnimateToIT();
+    _getPolyline();
     loadMarkers(widget.orderModel);
   }
 
@@ -182,6 +233,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
               _customInfoWindowController.onCameraMove!();
             },
             markers: markers,
+            polylines: Set<Polyline>.of(polylines.values),
           ),
           CustomInfoWindow(
             controller: _customInfoWindowController,
