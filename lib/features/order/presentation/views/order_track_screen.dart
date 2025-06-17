@@ -83,7 +83,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
               ),
             ),
           ),
-          LatLng(order.orderLat, order.orderLong),
+          LatLng(currentUserLocation!.latitude, currentUserLocation!.longitude), 
         );
       },
     );
@@ -214,7 +214,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
       body: Stack(
         children: [
           GoogleMap(
-            mapType: MapType.terrain,
+            mapType: MapType.normal,
             initialCameraPosition: CameraPosition(
               target: LatLng(
                 widget.orderModel.orderLat,
