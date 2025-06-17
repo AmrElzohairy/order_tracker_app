@@ -83,7 +83,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
               ),
             ),
           ),
-          LatLng(currentUserLocation!.latitude, currentUserLocation!.longitude), 
+          LatLng(currentUserLocation!.latitude, currentUserLocation!.longitude),
         );
       },
     );
