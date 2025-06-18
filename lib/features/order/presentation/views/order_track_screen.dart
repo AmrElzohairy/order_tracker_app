@@ -5,6 +5,7 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,6 +16,7 @@ import 'package:order_tracker_app/core/utils/location_services.dart';
 import 'package:order_tracker_app/core/widgets/spacing_widgets.dart'
     show HeightSpace;
 import 'package:order_tracker_app/features/order/data/model/order_model.dart';
+import 'package:order_tracker_app/features/order/presentation/cubits/order_cubit/order_cubit.dart';
 
 class OrderTrackScreen extends StatefulWidget {
   const OrderTrackScreen({super.key, required this.orderModel});
@@ -202,6 +204,15 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
       if (position != null) {
         currentUserLocation = LatLng(position.latitude, position.longitude);
         updateTruckMarker();
+        try {
+  context.read<OrderCubit>().editUserLocactionAndStatus(
+    orderId: widget.orderModel.orderId,
+    userLat: currentUserLocation!.latitude,
+    userLong: currentUserLocation!.longitude,
+  );
+} on Exception catch (e) {
+  log("Error updating user location and status => $e");
+}
         _getPolyline();
       }
     });

@@ -36,4 +36,27 @@ class OrderRepo {
       return Left("Error when getting user orders $e");
     }
   }
+
+  Future<Either<String, String>> editUserLocactionAndStatus({
+    required String orderId,
+    required double userLat,
+    required double userLong,
+  }) async {
+    try {
+      await firestore
+          .collection("orders")
+          .where("orderId", isEqualTo: orderId)
+          .get()
+          .then((value) {
+            value.docs.first.reference.update({
+              "userLat": userLat,
+              "userLong": userLong,
+              "orderStatus": "On The Way",
+            });
+          });
+      return const Right("User Location Updated Successfully");
+    } catch (e) {
+      return Left("Erro when updating user location $e");
+    }
+  }
 }

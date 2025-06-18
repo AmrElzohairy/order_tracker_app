@@ -26,4 +26,16 @@ class OrderCubit extends Cubit<OrderState> {
       (orders) => emit(GetUserOrdersSuccess(orders)),
     );
   }
+
+  Future<void> editUserLocactionAndStatus({
+    required String orderId,
+    required double userLat,
+    required double userLong,
+  }) async {
+    await orderRepo.editUserLocactionAndStatus(
+      orderId: orderId,
+      userLat: userLat,
+      userLong: userLong,
+    );
+  }
 }
